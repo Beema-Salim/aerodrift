@@ -107,3 +107,29 @@ def collect_security_groups():
         security_groups.append(security_group_data)
 
     return security_groups
+
+def collect_route_tables():
+    """
+    Collect route table information from AWS.
+    """
+
+    ec2 = get_ec2_client()
+
+    response = ec2.describe_route_tables()
+
+    route_tables = []
+
+    for route_table in response.get("RouteTables", []):
+
+        route_table_data = {
+            "resource_type": "ROUTE_TABLE",
+            "resource_id": route_table.get("RouteTableId"),
+            "region": ec2.meta.region_name,
+            "vpc_id": route_table.get("VpcId"),
+            "routes": route_table.get("Routes", []),
+            "associations": route_table.get("Associations", []),
+        }
+
+        route_tables.append(route_table_data)
+
+    return route_tables
