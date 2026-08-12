@@ -79,3 +79,31 @@ def collect_subnets():
         subnets.append(subnet_data)
 
     return subnets
+
+def collect_security_groups():
+    """
+    Collect security group information from AWS.
+    """
+
+    ec2 = get_ec2_client()
+
+    response = ec2.describe_security_groups()
+
+    security_groups = []
+
+    for group in response.get("SecurityGroups", []):
+
+        security_group_data = {
+            "resource_type": "SECURITY_GROUP",
+            "resource_id": group.get("GroupId"),
+            "region": ec2.meta.region_name,
+            "name": group.get("GroupName"),
+            "description": group.get("Description"),
+            "vpc_id": group.get("VpcId"),
+            "inbound_rules": group.get("IpPermissions", []),
+            "outbound_rules": group.get("IpPermissionsEgress", []),
+        }
+
+        security_groups.append(security_group_data)
+
+    return security_groups
