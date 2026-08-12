@@ -25,3 +25,30 @@ def collect_ec2_instances():
             instances.append(instance_data)
 
     return instances
+
+
+def collect_vpcs():
+    """
+    Collect VPC information from AWS.
+    """
+
+    ec2 = get_ec2_client()
+
+    response = ec2.describe_vpcs()
+
+    vpcs = []
+
+    for vpc in response.get("Vpcs", []):
+
+        vpc_data = {
+            "resource_type": "VPC",
+            "resource_id": vpc.get("VpcId"),
+            "region": ec2.meta.region_name,
+            "state": vpc.get("State"),
+            "cidr_block": vpc.get("CidrBlock"),
+            "is_default": vpc.get("IsDefault"),
+        }
+
+        vpcs.append(vpc_data)
+
+    return vpcs
