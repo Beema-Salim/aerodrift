@@ -52,3 +52,30 @@ def collect_vpcs():
         vpcs.append(vpc_data)
 
     return vpcs
+
+def collect_subnets():
+    """
+    Collect subnet information from AWS.
+    """
+
+    ec2 = get_ec2_client()
+
+    response = ec2.describe_subnets()
+
+    subnets = []
+
+    for subnet in response.get("Subnets", []):
+
+        subnet_data = {
+            "resource_type": "SUBNET",
+            "resource_id": subnet.get("SubnetId"),
+            "region": ec2.meta.region_name,
+            "state": subnet.get("State"),
+            "vpc_id": subnet.get("VpcId"),
+            "cidr_block": subnet.get("CidrBlock"),
+            "availability_zone": subnet.get("AvailabilityZone"),
+        }
+
+        subnets.append(subnet_data)
+
+    return subnets
