@@ -157,3 +157,30 @@ def collect_internet_gateways():
         internet_gateways.append(gateway_data)
 
     return internet_gateways
+
+def collect_network_acls():
+    """
+    Collect network ACL information from AWS.
+    """
+
+    ec2 = get_ec2_client()
+
+    response = ec2.describe_network_acls()
+
+    network_acls = []
+
+    for acl in response.get("NetworkAcls", []):
+
+        network_acl_data = {
+            "resource_type": "NETWORK_ACL",
+            "resource_id": acl.get("NetworkAclId"),
+            "region": ec2.meta.region_name,
+            "vpc_id": acl.get("VpcId"),
+            "is_default": acl.get("IsDefault"),
+            "entries": acl.get("Entries", []),
+            "associations": acl.get("Associations", []),
+        }
+
+        network_acls.append(network_acl_data)
+
+    return network_acls
