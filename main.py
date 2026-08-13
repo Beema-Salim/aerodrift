@@ -7,3 +7,9 @@ app = FastAPI(title="AeroDrift API")
 def home():
    return {"message": "Welcome to AeroDrift API"}
 
+@app.get("/topology")
+def get_topology():
+    return {
+        "nodes": [],
+        "edges": []
+    }
