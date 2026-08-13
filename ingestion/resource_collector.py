@@ -133,3 +133,27 @@ def collect_route_tables():
         route_tables.append(route_table_data)
 
     return route_tables
+
+def collect_internet_gateways():
+    """
+    Collect internet gateway information from AWS.
+    """
+
+    ec2 = get_ec2_client()
+
+    response = ec2.describe_internet_gateways()
+
+    internet_gateways = []
+
+    for gateway in response.get("InternetGateways", []):
+
+        gateway_data = {
+            "resource_type": "INTERNET_GATEWAY",
+            "resource_id": gateway.get("InternetGatewayId"),
+            "region": ec2.meta.region_name,
+            "attachments": gateway.get("Attachments", []),
+        }
+
+        internet_gateways.append(gateway_data)
+
+    return internet_gateways
