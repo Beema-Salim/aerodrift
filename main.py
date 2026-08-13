@@ -13,3 +13,10 @@ def get_topology():
         "nodes": [],
         "edges": []
     }
+
+@app.get("/drift")
+def get_drift():
+    return {
+        "drift_count": 0,
+        "issues": []
+    }
