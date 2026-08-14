@@ -1,6 +1,18 @@
 from .aws_client import get_ec2_client
 
+def _get_aws_response(ec2, method_name):
+    """
+    Execute an AWS EC2 API method and return its response.
+    """
 
+    try:
+        method = getattr(ec2, method_name)
+        return method()
+
+    except Exception as error:
+        print(f"AWS API error in {method_name}: {error}")
+        return {}
+    
 def collect_ec2_instances():
     """
     Collect EC2 instance information from AWS.
@@ -8,7 +20,7 @@ def collect_ec2_instances():
 
     ec2 = get_ec2_client()
 
-    response = ec2.describe_instances()
+    response = _get_aws_response(ec2, "describe_instances")
 
     instances = []
 
@@ -34,7 +46,7 @@ def collect_vpcs():
 
     ec2 = get_ec2_client()
 
-    response = ec2.describe_vpcs()
+    response = _get_aws_response(ec2, "describe_vpcs")
 
     vpcs = []
 
@@ -60,8 +72,7 @@ def collect_subnets():
 
     ec2 = get_ec2_client()
 
-    response = ec2.describe_subnets()
-
+    response = _get_aws_response(ec2, "describe_subnets")
     subnets = []
 
     for subnet in response.get("Subnets", []):
@@ -87,7 +98,7 @@ def collect_security_groups():
 
     ec2 = get_ec2_client()
 
-    response = ec2.describe_security_groups()
+    response = _get_aws_response(ec2, "describe_security_groups")
 
     security_groups = []
 
@@ -115,7 +126,7 @@ def collect_route_tables():
 
     ec2 = get_ec2_client()
 
-    response = ec2.describe_route_tables()
+    response = _get_aws_response(ec2, "describe_route_tables")
 
     route_tables = []
 
@@ -141,7 +152,7 @@ def collect_internet_gateways():
 
     ec2 = get_ec2_client()
 
-    response = ec2.describe_internet_gateways()
+    response = _get_aws_response(ec2, "describe_internet_gateways")
 
     internet_gateways = []
 
@@ -165,7 +176,7 @@ def collect_network_acls():
 
     ec2 = get_ec2_client()
 
-    response = ec2.describe_network_acls()
+    response = _get_aws_response(ec2, "describe_network_acls")
 
     network_acls = []
 
