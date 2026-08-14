@@ -15,5 +15,24 @@
 
     <h2>Remediation</h2>
     <div id="remediation">Loading remediation...</div>
+
+    <script>
+      async function loadTopology() {
+        try {
+          const response = await fetch("/topology");
+          const data = await response.json();
+
+          document.getElementById("topology").innerHTML = `
+                <p><strong>Nodes:</strong> ${data.nodes.length}</p>
+                <p><strong>Edges:</strong> ${data.edges.length}</p>
+            `;
+        } catch (error) {
+          document.getElementById("topology").innerHTML =
+            "Unable to load topology data.";
+        }
+      }
+
+      loadTopology();
+    </script>
   </body>
 </html>
