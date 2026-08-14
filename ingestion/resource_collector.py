@@ -184,3 +184,18 @@ def collect_network_acls():
         network_acls.append(network_acl_data)
 
     return network_acls
+
+def collect_all_resources():
+    """
+    Collect all supported AWS resources.
+    """
+
+    return {
+        "ec2": collect_ec2_instances(),
+        "vpcs": collect_vpcs(),
+        "subnets": collect_subnets(),
+        "security_groups": collect_security_groups(),
+        "route_tables": collect_route_tables(),
+        "internet_gateways": collect_internet_gateways(),
+        "network_acls": collect_network_acls(),
+    }   
