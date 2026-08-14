@@ -20,3 +20,10 @@ def get_drift():
         "drift_count": 0,
         "issues": []
     }
+
+@app.get("/remediation")
+def get_remediation():
+    return {
+        "status": "pending",
+        "actions": []
+    }
