@@ -34,5 +34,24 @@
 
       loadTopology();
     </script>
+
+    <script>
+      async function loadDrift() {
+        try {
+          const response = await fetch("/drift");
+          const data = await response.json();
+
+          document.getElementById("drift").innerHTML = `
+                <p><strong>Drift Count:</strong> ${data.drift_count}</p>
+                <p><strong>Issues:</strong> ${data.issues.length}</p>
+            `;
+        } catch (error) {
+          document.getElementById("drift").innerHTML =
+            "Unable to load drift data.";
+        }
+      }
+
+      loadDrift();
+    </script>
   </body>
 </html>
