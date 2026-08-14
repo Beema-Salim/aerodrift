@@ -1,7 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
 
 app = FastAPI(title="AeroDrift API")
-
+templates = Jinja2Templates(directory="web/templates")
 
 @app.get("/")
 def home():
@@ -27,3 +28,11 @@ def get_remediation():
         "status": "pending",
         "actions": []
     }
+
+@app.get("/dashboard")
+def dashboard(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="dashboard.html",
+        context={"request": request}
+    )
