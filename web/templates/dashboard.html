@@ -53,5 +53,24 @@
 
       loadDrift();
     </script>
+
+    <script>
+      async function loadRemediation() {
+        try {
+          const response = await fetch("/remediation");
+          const data = await response.json();
+
+          document.getElementById("remediation").innerHTML = `
+                <p><strong>Remediation Count:</strong> ${data.remediation_count}</p>
+                <p><strong>Actions:</strong> ${data.actions.length}</p>
+            `;
+        } catch (error) {
+          document.getElementById("remediation").innerHTML =
+            "Unable to load remediation data.";
+        }
+      }
+
+      loadRemediation();
+    </script>
   </body>
 </html>
