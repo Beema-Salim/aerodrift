@@ -1,0 +1,17 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 30px;
+}
+
+.dashboard {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  width: 250px;
+}
