@@ -1,4 +1,8 @@
+import logging
+
 from .aws_client import get_ec2_client
+
+logger = logging.getLogger(__name__)
 
 def _get_aws_response(ec2, method_name):
     """
@@ -10,7 +14,7 @@ def _get_aws_response(ec2, method_name):
         return method()
 
     except Exception as error:
-        print(f"AWS API error in {method_name}: {error}")
+        logger.error("AWS API error in %s: %s", method_name, error)
         return {}
     
 def collect_ec2_instances():
