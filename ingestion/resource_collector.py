@@ -200,12 +200,34 @@ def collect_network_acls():
 
     return network_acls
 
+def validate_resource_data(data):
+    """
+    Validate the common structure of collected AWS resources.
+    """
+
+    required_fields = {"resource_type", "resource_id", "region"}
+
+    for resource_category, resources in data.items():
+
+        if not isinstance(resources, list):
+            return False
+
+        for resource in resources:
+
+            if not isinstance(resource, dict):
+                return False
+
+            if not required_fields.issubset(resource.keys()):
+                return False
+
+    return True
+
 def collect_all_resources():
     """
     Collect all supported AWS resources.
     """
 
-    return {
+    resources = {
         "ec2": collect_ec2_instances(),
         "vpcs": collect_vpcs(),
         "subnets": collect_subnets(),
@@ -213,4 +235,9 @@ def collect_all_resources():
         "route_tables": collect_route_tables(),
         "internet_gateways": collect_internet_gateways(),
         "network_acls": collect_network_acls(),
-    }   
+    }
+
+    if not validate_resource_data(resources):
+        raise ValueError("Invalid resource data collected")
+
+    return resources
