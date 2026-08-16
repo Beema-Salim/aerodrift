@@ -10,8 +10,8 @@ topology_data = {
 
 console.print(
     Panel(
-        f"Nodes: {topology_data['nodes']}\n"
-        f"Edges: {topology_data['edges']}",
+        f"[bold]Nodes:[/bold] {topology_data['nodes']}\n"
+        f"[bold]Edges:[/bold] {topology_data['edges']}",
         title="Topology",
         border_style="blue"
     )
