@@ -37,8 +37,8 @@ remediation_data = {
 
 console.print(
     Panel(
-        f"Status: {remediation_data['status']}\n"
-        f"Actions: {remediation_data['actions']}",
+        f"[bold]Status:[/bold] {remediation_data['status']}\n"
+        f"[bold]Actions:[/bold] {remediation_data['actions']}",
         title="Remediation",
         border_style="green"
     )
