@@ -23,8 +23,8 @@ drift_data = {
 
 console.print(
     Panel(
-        f"Drift Count: {drift_data['drift_count']}\n"
-        f"Issues: {drift_data['issues']}",
+        f"[bold]Drift Count:[/bold] {drift_data['drift_count']}\n"
+        f"[bold]Issues:[/bold] {drift_data['issues']}",
         title="Drift",
         border_style="yellow"
     )
