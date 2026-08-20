@@ -6,7 +6,8 @@ console = Console()
 
 environment_data = {
     "name": "Development",
-    "region": "ap-south-1"
+    "region": "ap-south-1",
+    "last_updated": "Week 1 Mock Run"
 }
 
 title = Text("AeroDrift CLI Dashboard", style="bold cyan")
@@ -56,6 +57,7 @@ summary_panel = Panel(
     f"Cloud State: Mock Data\n"
     f"Environment: {environment_data['name']}\n"
     f"Region: {environment_data['region']}\n"
+    f"Last Updated: {environment_data['last_updated']}\n"
     f"Resources: {topology_data['nodes']}\n"
     f"Status: Ready",
     title="System Status",
