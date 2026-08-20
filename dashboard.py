@@ -4,6 +4,11 @@ from rich.columns import Columns
 from rich.text import Text
 console = Console()
 
+environment_data = {
+    "name": "Development",
+    "region": "ap-south-1"
+}
+
 title = Text("AeroDrift CLI Dashboard", style="bold cyan")
 subtitle = Text("Cloud Infrastructure Monitoring", style="dim")
 
@@ -49,7 +54,8 @@ remediation_panel = Panel(
 
 summary_panel = Panel(
     f"Cloud State: Mock Data\n"
-    f"Environment: Development\n"
+    f"Environment: {environment_data['name']}\n"
+    f"Region: {environment_data['region']}\n"
     f"Resources: {topology_data['nodes']}\n"
     f"Status: Ready",
     title="System Status",
