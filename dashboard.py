@@ -46,6 +46,15 @@ remediation_panel = Panel(
         title="Remediation",
         border_style="green"
     )
+
+summary_panel = Panel(
+    "Cloud State: Mock Data\n"
+    "Environment: Development\n"
+    "Status: Ready",
+    title="System Status",
+    border_style="magenta"
+)
+
 console.print(
     Columns([
         topology_panel,
@@ -53,3 +62,4 @@ console.print(
         remediation_panel
     ])
 )
+console.print(summary_panel)
