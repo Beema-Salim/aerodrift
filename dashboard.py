@@ -1,8 +1,14 @@
 from rich.console import Console
 from rich.panel import Panel
 from rich.columns import Columns
-
+from rich.text import Text
 console = Console()
+
+title = Text("AeroDrift CLI Dashboard", style="bold cyan")
+subtitle = Text("Cloud Infrastructure Monitoring", style="dim")
+
+console.print(title, justify="center")
+console.print(subtitle, justify="center")
 
 topology_data = {
     "nodes": 4,
