@@ -48,9 +48,10 @@ remediation_panel = Panel(
     )
 
 summary_panel = Panel(
-    "Cloud State: Mock Data\n"
-    "Environment: Development\n"
-    "Status: Ready",
+    f"Cloud State: Mock Data\n"
+    f"Environment: Development\n"
+    f"Resources: {topology_data['nodes']}\n"
+    f"Status: Ready",
     title="System Status",
     border_style="magenta"
 )
