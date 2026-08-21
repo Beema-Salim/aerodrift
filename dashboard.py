@@ -31,7 +31,9 @@ dashboard_data = {
     }
 }
 
-def get_dashboard_data():
+def get_dashboard_data(api_data=None):
+    if api_data:
+        return api_data
     return dashboard_data
 
 def create_topology_panel(data):
