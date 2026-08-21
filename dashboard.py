@@ -16,39 +16,43 @@ subtitle = Text("Cloud Infrastructure Monitoring", style="dim")
 console.print(title, justify="center")
 console.print(subtitle, justify="center")
 
-topology_data = {
-    "nodes": 4,
-    "edges": 3
+dashboard_data = {
+    "topology": {
+        "nodes": 4,
+        "edges": 3
+    },
+    "drift": {
+        "drift_count": 0,
+        "issues": 0
+    },
+    "remediation": {
+        "status": "pending",
+        "actions": 0
+    }
 }
 
 topology_panel = Panel(
-        f"[bold]Nodes:[/bold] {topology_data['nodes']}\n"
-        f"[bold]Edges:[/bold] {topology_data['edges']}",
+        f"[bold]Nodes:[/bold] {dashboard_data['topology']['nodes']}\n"
+        f"[bold]Edges:[/bold] {dashboard_data['topology']['edges']}",
         title="Topology",
         border_style="blue"
     )
 
-drift_data = {
-    "drift_count": 0,
-    "issues": 0
-}
+
 
 drift_panel = Panel(
-        f"[bold]Drift Count:[/bold] {drift_data['drift_count']}\n"
-        f"[bold]Issues:[/bold] {drift_data['issues']}",
+        f"[bold]Drift Count:[/bold] {dashboard_data['drift']['drift_count']}\n"
+        f"[bold]Issues:[/bold] {dashboard_data['drift']['issues']}",
         title="Drift",
         border_style="yellow"
     )
 
 
-remediation_data = {
-    "status": "pending",
-    "actions": 0
-}
+
 
 remediation_panel = Panel(
-        f"[bold]Status:[/bold] {remediation_data['status']}\n"
-        f"[bold]Actions:[/bold] {remediation_data['actions']}",
+        f"[bold]Status:[/bold] {dashboard_data['remediation']['status']}\n"
+        f"[bold]Actions:[/bold] {dashboard_data['remediation']['actions']}",
         title="Remediation",
         border_style="green"
     )
@@ -58,7 +62,7 @@ summary_panel = Panel(
     f"Environment: {environment_data['name']}\n"
     f"Region: {environment_data['region']}\n"
     f"Last Updated: {environment_data['last_updated']}\n"
-    f"Resources: {topology_data['nodes']}\n"
+    f"Resources: {dashboard_data['topology']['nodes']}\n"
     f"Status: Ready",
     title="System Status",
     border_style="magenta"
