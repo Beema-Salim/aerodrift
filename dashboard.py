@@ -31,31 +31,35 @@ dashboard_data = {
     }
 }
 
-topology_panel = Panel(
-        f"[bold]Nodes:[/bold] {dashboard_data['topology']['nodes']}\n"
-        f"[bold]Edges:[/bold] {dashboard_data['topology']['edges']}",
+def create_topology_panel(data):
+    return Panel(
+        f"[bold]Nodes:[/bold] {data['nodes']}\n"
+        f"[bold]Edges:[/bold] {data['edges']}",
         title="Topology",
         border_style="blue"
     )
 
 
-
-drift_panel = Panel(
-        f"[bold]Drift Count:[/bold] {dashboard_data['drift']['drift_count']}\n"
-        f"[bold]Issues:[/bold] {dashboard_data['drift']['issues']}",
+def create_drift_panel(data):
+    return Panel(
+        f"[bold]Drift Count:[/bold] {data['drift_count']}\n"
+        f"[bold]Issues:[/bold] {data['issues']}",
         title="Drift",
         border_style="yellow"
     )
 
 
-
-
-remediation_panel = Panel(
-        f"[bold]Status:[/bold] {dashboard_data['remediation']['status']}\n"
-        f"[bold]Actions:[/bold] {dashboard_data['remediation']['actions']}",
+def create_remediation_panel(data):
+    return Panel(
+        f"[bold]Status:[/bold] {data['status']}\n"
+        f"[bold]Actions:[/bold] {data['actions']}",
         title="Remediation",
         border_style="green"
     )
+
+topology_panel = create_topology_panel(dashboard_data["topology"])
+drift_panel = create_drift_panel(dashboard_data["drift"])
+remediation_panel = create_remediation_panel(dashboard_data["remediation"])
 
 summary_panel = Panel(
     f"Cloud State: Mock Data\n"
