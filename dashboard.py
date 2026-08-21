@@ -31,6 +31,9 @@ dashboard_data = {
     }
 }
 
+def get_dashboard_data():
+    return dashboard_data
+
 def create_topology_panel(data):
     return Panel(
         f"[bold]Nodes:[/bold] {data['nodes']}\n"
@@ -57,9 +60,11 @@ def create_remediation_panel(data):
         border_style="green"
     )
 
-topology_panel = create_topology_panel(dashboard_data["topology"])
-drift_panel = create_drift_panel(dashboard_data["drift"])
-remediation_panel = create_remediation_panel(dashboard_data["remediation"])
+data = get_dashboard_data()
+
+topology_panel = create_topology_panel(data["topology"])
+drift_panel = create_drift_panel(data["drift"])
+remediation_panel = create_remediation_panel(data["remediation"])
 
 summary_panel = Panel(
     f"Cloud State: Mock Data\n"
