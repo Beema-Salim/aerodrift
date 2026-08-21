@@ -33,8 +33,8 @@ dashboard_data = {
 
 def get_dashboard_data(api_data=None):
     if api_data:
-        return api_data
-    return dashboard_data
+        return api_data, "API Data"
+    return dashboard_data, "Mock Data"
 
 def create_topology_panel(data):
     return Panel(
@@ -62,14 +62,14 @@ def create_remediation_panel(data):
         border_style="green"
     )
 
-data = get_dashboard_data()
+data, data_source = get_dashboard_data()
 
 topology_panel = create_topology_panel(data["topology"])
 drift_panel = create_drift_panel(data["drift"])
 remediation_panel = create_remediation_panel(data["remediation"])
 
 summary_panel = Panel(
-    f"Cloud State: Mock Data\n"
+    f"Cloud State: {data_source}\n"
     f"Environment: {environment_data['name']}\n"
     f"Region: {environment_data['region']}\n"
     f"Last Updated: {environment_data['last_updated']}\n"
