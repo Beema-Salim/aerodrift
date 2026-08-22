@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+  <head>
+    <title>AeroDrift Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+
+  <body>
+    <header class="top-header">
+      <h1>AeroDrift Dashboard</h1>
+      <p>Cloud Infrastructure Monitoring</p>
+    </header>
+
+    <div class="dashboard">
+      <div class="card">
+        <h2>Topology</h2>
+        <p class="card-description">Cloud resource relationships</p>
+        <div id="topology">Loading topology...</div>
+      </div>
+
+      <!-- <h2>Topology</h2>
+    <div id="topology">Loading topology...</div> -->
+
+      <div class="card">
+        <h2>Drift</h2>
+        <p class="card-description">Infrastructure configuration changes</p>
+        <div id="drift">Loading drift...</div>
+      </div>
+      <!-- <h2>Drift</h2>
+    <div id="drift">Loading drift...</div> -->
+
+      <div class="card">
+        <h2>Remediation</h2>
+        <p class="card-description">Actions taken to resolve drift</p>
+        <div id="remediation">Loading remediation...</div>
+      </div>
+    </div>
+    <!-- <h2>Remediation</h2>
+    <div id="remediation">Loading remediation...</div> -->
+
+    <script>
+      async function loadTopology() {
+        try {
+          const response = await fetch("/topology");
+          const data = await response.json();
+
+          document.getElementById("topology").innerHTML = `
+                <p><strong>Nodes:</strong> ${data.nodes.length}</p>
+                <p><strong>Edges:</strong> ${data.edges.length}</p>
+            `;
+        } catch (error) {
+          document.getElementById("topology").innerHTML =
+            "Unable to load topology data.";
+        }
+      }
+
+      loadTopology();
+    </script>
+
+    <script>
+      async function loadDrift() {
+        try {
+          const response = await fetch("/drift");
+          const data = await response.json();
+
+          document.getElementById("drift").innerHTML = `
+                <p><strong>Drift Count:</strong> ${data.drift_count}</p>
+                <p><strong>Issues:</strong> ${data.issues.length}</p>
+            `;
+        } catch (error) {
+          document.getElementById("drift").innerHTML =
+            "Unable to load drift data.";
+        }
+      }
+
+      loadDrift();
+    </script>
+
+    <script>
+      async function loadRemediation() {
+        try {
+          const response = await fetch("/remediation");
+          const data = await response.json();
+
+          document.getElementById("remediation").innerHTML = `
+                <p><strong>Remediation Count:</strong> ${data.remediation_count}</p>
+                <p><strong>Actions:</strong> ${data.actions.length}</p>
+            `;
+        } catch (error) {
+          document.getElementById("remediation").innerHTML =
+            "Unable to load remediation data.";
+        }
+      }
+
+      loadRemediation();
+    </script>
+  </body>
+</html>
