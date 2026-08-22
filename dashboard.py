@@ -62,9 +62,13 @@ def create_remediation_panel(data):
         border_style="green"
     )
 
+def get_topology_from_api():
+    # Placeholder for the real Topology API integration
+    return dashboard_data["topology"]
 data, data_source = get_dashboard_data()
 
-topology_panel = create_topology_panel(data["topology"])
+topology_data = get_topology_from_api()
+topology_panel = create_topology_panel(topology_data)
 drift_panel = create_drift_panel(data["drift"])
 remediation_panel = create_remediation_panel(data["remediation"])
 
