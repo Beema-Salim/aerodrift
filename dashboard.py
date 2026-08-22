@@ -74,6 +74,20 @@ def get_remediation_from_api():
     # Placeholder for the real Remediation API integration
     return dashboard_data["remediation"]
 
+def test_dashboard_api_data():
+    topology = get_topology_from_api()
+    drift = get_drift_from_api()
+    remediation = get_remediation_from_api()
+
+    assert "nodes" in topology
+    assert "edges" in topology
+    assert "drift_count" in drift
+    assert "issues" in drift
+    assert "status" in remediation
+    assert "actions" in remediation
+
+    print("Dashboard API integration test passed.")
+
 data, data_source = get_dashboard_data()
 
 topology_data = get_topology_from_api()
@@ -102,3 +116,5 @@ console.print(
     ])
 )
 console.print(summary_panel)
+
+test_dashboard_api_data()
