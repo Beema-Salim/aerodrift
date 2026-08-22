@@ -32,8 +32,11 @@ dashboard_data = {
 }
 
 def get_dashboard_data(api_data=None):
-    if isinstance(api_data, dict):
+    required_sections = {"topology", "drift", "remediation"}
+
+    if isinstance(api_data, dict) and required_sections.issubset(api_data):
         return api_data, "API Data"
+
     return dashboard_data, "Mock Data"
 
 def create_topology_panel(data):
