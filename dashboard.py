@@ -65,17 +65,23 @@ def create_remediation_panel(data):
 def get_topology_from_api():
     # Placeholder for the real Topology API integration
     return dashboard_data["topology"]
-data, data_source = get_dashboard_data()
 
 def get_drift_from_api():
     # Placeholder for the real Drift API integration
     return dashboard_data["drift"]
 
+def get_remediation_from_api():
+    # Placeholder for the real Remediation API integration
+    return dashboard_data["remediation"]
+
+data, data_source = get_dashboard_data()
+
 topology_data = get_topology_from_api()
 topology_panel = create_topology_panel(topology_data)
 drift_data = get_drift_from_api()
 drift_panel = create_drift_panel(drift_data)
-remediation_panel = create_remediation_panel(data["remediation"])
+remediation_data = get_remediation_from_api()
+remediation_panel = create_remediation_panel(remediation_data)
 
 summary_panel = Panel(
     f"Cloud State: {data_source}\n"
