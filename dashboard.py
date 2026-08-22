@@ -67,9 +67,14 @@ def get_topology_from_api():
     return dashboard_data["topology"]
 data, data_source = get_dashboard_data()
 
+def get_drift_from_api():
+    # Placeholder for the real Drift API integration
+    return dashboard_data["drift"]
+
 topology_data = get_topology_from_api()
 topology_panel = create_topology_panel(topology_data)
-drift_panel = create_drift_panel(data["drift"])
+drift_data = get_drift_from_api()
+drift_panel = create_drift_panel(drift_data)
 remediation_panel = create_remediation_panel(data["remediation"])
 
 summary_panel = Panel(
