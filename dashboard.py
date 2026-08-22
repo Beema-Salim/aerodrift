@@ -32,7 +32,7 @@ dashboard_data = {
 }
 
 def get_dashboard_data(api_data=None):
-    if api_data:
+    if isinstance(api_data, dict):
         return api_data, "API Data"
     return dashboard_data, "Mock Data"
 
