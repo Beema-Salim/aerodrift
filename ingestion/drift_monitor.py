@@ -6,23 +6,20 @@ from .state_snapshot import (
     create_state_snapshot,
     find_changed_resources,
 )
+from .exposure_detector import find_public_ingress
+from .drift_event import create_drift_events
 
 
 async def monitor_drift(poll_interval=2, max_cycles=None):
     """
     Continuously poll AWS and detect resource changes.
-
-    poll_interval:
-        Seconds between AWS polls.
-
-    max_cycles:
-        Optional number of polling cycles.
-        None means continuous monitoring.
     """
 
     print("Starting AeroDrift monitor...")
 
     initial_data = await collect_all_resources_async()
+    print("Initial AWS collection completed")
+
     previous_snapshot = create_state_snapshot(initial_data)
 
     cycle = 0
@@ -33,6 +30,8 @@ async def monitor_drift(poll_interval=2, max_cycles=None):
         poll_started = time.perf_counter()
 
         current_data = await collect_all_resources_async()
+        print("Current AWS collection completed")
+
         current_snapshot = create_state_snapshot(current_data)
 
         changes = find_changed_resources(
@@ -48,10 +47,30 @@ async def monitor_drift(poll_interval=2, max_cycles=None):
             for change in changes:
                 print(change)
 
+            security_group_changes = [
+                change
+                for change in changes
+                if change.get("resource_type") == "security_groups"
+            ]
+
+            if security_group_changes:
+                exposures = find_public_ingress(
+                    current_data.get("security_groups", [])
+                )
+
+                drift_events = create_drift_events(exposures)
+
+                if drift_events:
+                    print("PUBLIC INGRESS EXPOSURE DETECTED")
+
+                    for event in drift_events:
+                        print(event)
+
             print(
                 f"Detection processing time: "
                 f"{detection_time:.3f} seconds"
             )
+
         else:
             print("No drift detected")
 
