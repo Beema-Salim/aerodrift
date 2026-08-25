@@ -10,7 +10,11 @@ from .exposure_detector import find_public_ingress
 from .drift_event import create_drift_events
 
 
-async def monitor_drift(poll_interval=2, max_cycles=None):
+async def monitor_drift(
+    poll_interval=2,
+    max_cycles=None,
+    on_drift=None,
+):
     """
     Continuously poll AWS and detect resource changes.
     """
@@ -65,6 +69,12 @@ async def monitor_drift(poll_interval=2, max_cycles=None):
 
                     for event in drift_events:
                         print(event)
+
+                        if on_drift:
+                            result = on_drift(event)
+
+                            if asyncio.iscoroutine(result):
+                                await result
 
             print(
                 f"Detection processing time: "
