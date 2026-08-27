@@ -1,3 +1,4 @@
+import requests
 from rich.console import Console
 from rich.panel import Panel
 from rich.columns import Columns
@@ -42,8 +43,11 @@ dashboard_data = {
 }
 
 def get_dashboard_data(api_data=None):
-    if isinstance(api_data, dict):
+    required_sections = {"topology", "drift", "remediation"}
+
+    if isinstance(api_data, dict) and required_sections.issubset(api_data):
         return api_data, "API Data"
+
     return dashboard_data, "Mock Data"
 
 def create_topology_panel(data):
@@ -88,6 +92,14 @@ def get_remediation_from_api():
     # Placeholder for the real Remediation API integration
     return dashboard_data["remediation"]
 
+def fetch_api_data(url):
+    try:
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+        return response.json()
+    except requests.RequestException:
+        return None
+    
 def test_dashboard_api_data():
     topology = get_topology_from_api()
     drift = get_drift_from_api()
