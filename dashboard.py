@@ -85,7 +85,11 @@ def get_topology_from_api():
     return dashboard_data["topology"]
 
 def get_drift_from_api():
-    # Placeholder for the real Drift API integration
+    api_data = fetch_api_data("http://127.0.0.1:8000/drift")
+
+    if api_data:
+        return api_data
+
     return dashboard_data["drift"]
 
 def get_remediation_from_api():
