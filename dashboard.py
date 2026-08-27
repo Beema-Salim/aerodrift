@@ -2,7 +2,17 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.columns import Columns
 from rich.text import Text
+import requests
+
 console = Console()
+
+def fetch_api_data(url):
+    try:
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+        return response.json()
+    except requests.RequestException:
+        return None
 
 environment_data = {
     "name": "Development",
@@ -63,7 +73,11 @@ def create_remediation_panel(data):
     )
 
 def get_topology_from_api():
-    # Placeholder for the real Topology API integration
+    api_data = fetch_api_data("http://127.0.0.1:8000/topology")
+
+    if api_data:
+        return api_data
+
     return dashboard_data["topology"]
 
 def get_drift_from_api():

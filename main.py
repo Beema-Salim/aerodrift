@@ -14,8 +14,8 @@ def home():
 @app.get("/topology")
 def get_topology():
     return {
-        "nodes": [],
-        "edges": []
+        "nodes": 4,
+        "edges": 3
     }
 
 @app.get("/drift")
