@@ -47,7 +47,7 @@ def get_data_source():
     if topology:
         return "API Connected"
 
-    return "Mock Fallback"
+    return "API Unavailable - Using Mock Data"
 
 
 def create_topology_panel(data):
