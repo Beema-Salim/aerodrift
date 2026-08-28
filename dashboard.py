@@ -102,8 +102,15 @@ def fetch_api_data(url):
     try:
         response = requests.get(url, timeout=5)
         response.raise_for_status()
-        return response.json()
-    except requests.RequestException:
+
+        data = response.json()
+
+        if isinstance(data, dict):
+            return data
+
+        return None
+
+    except (requests.RequestException, ValueError):
         return None
     
 def test_dashboard_api_data():
