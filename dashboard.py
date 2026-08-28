@@ -41,10 +41,8 @@ def get_dashboard_data(api_data=None):
 
     return dashboard_data, "Mock Data"
 
-def get_data_source():
-    topology = fetch_api_data("http://127.0.0.1:8000/topology")
-
-    if topology:
+def get_data_source(api_data):
+    if api_data:
         return "API Connected"
 
     return "API Unavailable - Using Mock Data"
@@ -132,7 +130,7 @@ data, data_source = get_dashboard_data({
     "remediation": remediation_data
 })
 
-connection_status = get_data_source()
+connection_status = get_data_source(topology_data)
 
 topology_panel = create_topology_panel(topology_data)
 
