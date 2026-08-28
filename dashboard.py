@@ -1,4 +1,3 @@
-import requests
 from rich.console import Console
 from rich.panel import Panel
 from rich.columns import Columns
@@ -6,14 +5,6 @@ from rich.text import Text
 import requests
 
 console = Console()
-
-def fetch_api_data(url):
-    try:
-        response = requests.get(url, timeout=5)
-        response.raise_for_status()
-        return response.json()
-    except requests.RequestException:
-        return None
 
 environment_data = {
     "name": "Development",
@@ -122,13 +113,20 @@ def test_dashboard_api_data():
 
     print("Dashboard API integration test passed.")
 
-data, data_source = get_dashboard_data()
-
 topology_data = get_topology_from_api()
-topology_panel = create_topology_panel(topology_data)
 drift_data = get_drift_from_api()
-drift_panel = create_drift_panel(drift_data)
 remediation_data = get_remediation_from_api()
+
+data, data_source = get_dashboard_data({
+    "topology": topology_data,
+    "drift": drift_data,
+    "remediation": remediation_data
+})
+
+topology_panel = create_topology_panel(topology_data)
+
+drift_panel = create_drift_panel(drift_data)
+
 remediation_panel = create_remediation_panel(remediation_data)
 
 summary_panel = Panel(
