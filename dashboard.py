@@ -41,6 +41,15 @@ def get_dashboard_data(api_data=None):
 
     return dashboard_data, "Mock Data"
 
+def get_data_source():
+    topology = fetch_api_data("http://127.0.0.1:8000/topology")
+
+    if topology:
+        return "API Connected"
+
+    return "Mock Fallback"
+
+
 def create_topology_panel(data):
     return Panel(
         f"[bold]Nodes:[/bold] {data['nodes']}\n"
@@ -123,6 +132,8 @@ data, data_source = get_dashboard_data({
     "remediation": remediation_data
 })
 
+connection_status = get_data_source()
+
 topology_panel = create_topology_panel(topology_data)
 
 drift_panel = create_drift_panel(drift_data)
@@ -131,6 +142,7 @@ remediation_panel = create_remediation_panel(remediation_data)
 
 summary_panel = Panel(
     f"Cloud State: {data_source}\n"
+    f"API Status: {connection_status}\n"
     f"Environment: {environment_data['name']}\n"
     f"Region: {environment_data['region']}\n"
     f"Last Updated: {environment_data['last_updated']}\n"
