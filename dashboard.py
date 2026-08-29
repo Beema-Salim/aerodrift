@@ -1,3 +1,4 @@
+from datetime import datetime
 from rich.console import Console
 from rich.panel import Panel
 from rich.columns import Columns
@@ -142,7 +143,7 @@ topology_data = get_topology_from_api()
 drift_data = get_drift_from_api()
 remediation_data = get_remediation_from_api()
 
-
+refresh_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 data, data_source = get_dashboard_data({
     "topology": topology_data,
@@ -176,6 +177,7 @@ summary_panel = Panel(
     f"Environment: {environment_data['name']}\n"
     f"Region: {environment_data['region']}\n"
     f"Last Updated: {environment_data['last_updated']}\n"
+    f"Data Refreshed: {refresh_time}\n"
     f"Resources: {topology_data['nodes']}\n"
     f"Status: Ready",
     title="System Status",
