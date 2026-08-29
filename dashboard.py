@@ -132,10 +132,18 @@ def test_dashboard_api_data():
 
     assert "nodes" in topology
     assert "edges" in topology
+    assert isinstance(topology["nodes"], int)
+    assert isinstance(topology["edges"], int)
+
     assert "drift_count" in drift
     assert "issues" in drift
+    assert isinstance(drift["drift_count"], int)
+    assert isinstance(drift["issues"], list)
+
     assert "status" in remediation
     assert "actions" in remediation
+    assert isinstance(remediation["status"], str)
+    assert isinstance(remediation["actions"], (int, list))
 
     print("Dashboard API integration test passed.")
 
