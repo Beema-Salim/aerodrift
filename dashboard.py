@@ -151,7 +151,7 @@ summary_panel = Panel(
     f"Environment: {environment_data['name']}\n"
     f"Region: {environment_data['region']}\n"
     f"Last Updated: {environment_data['last_updated']}\n"
-    f"Resources: {dashboard_data['topology']['nodes']}\n"
+    f"Resources: {topology_data['nodes']}\n"
     f"Status: Ready",
     title="System Status",
     border_style="magenta"
