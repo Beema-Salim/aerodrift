@@ -5,6 +5,7 @@ from rich.text import Text
 import requests
 
 console = Console()
+api_error = None
 
 environment_data = {
     "name": "Development",
@@ -99,6 +100,8 @@ def get_remediation_from_api():
     return dashboard_data["remediation"]
 
 def fetch_api_data(url):
+    global api_error
+
     try:
         response = requests.get(url, timeout=5)
         response.raise_for_status()
@@ -106,11 +109,18 @@ def fetch_api_data(url):
         data = response.json()
 
         if isinstance(data, dict):
+            api_error = None
             return data
 
+        api_error = "Invalid API response"
+        return None
+
+    except requests.Timeout:
+        api_error = "API request timed out"
         return None
 
     except (requests.RequestException, ValueError):
+        api_error = "API unavailable"
         return None
     
 def test_dashboard_api_data():
@@ -137,7 +147,10 @@ data, data_source = get_dashboard_data({
     "remediation": remediation_data
 })
 
-connection_status = get_data_source(topology_data)
+if api_error:
+    connection_status = api_error
+else:
+    connection_status = get_data_source(topology_data)
 
 topology_panel = create_topology_panel(topology_data)
 
