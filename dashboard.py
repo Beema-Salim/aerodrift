@@ -122,6 +122,7 @@ def fetch_api_data(url):
     except (requests.RequestException, ValueError):
         api_error = "API unavailable"
         return None
+
     
 def test_dashboard_api_data():
     topology = get_topology_from_api()
@@ -141,6 +142,8 @@ topology_data = get_topology_from_api()
 drift_data = get_drift_from_api()
 remediation_data = get_remediation_from_api()
 
+
+
 data, data_source = get_dashboard_data({
     "topology": topology_data,
     "drift": drift_data,
@@ -152,6 +155,14 @@ if api_error:
 else:
     connection_status = get_data_source(topology_data)
 
+source = "Mock" if api_error else "API"
+
+endpoint_status = (
+    f"Topology: {source} | "
+    f"Drift: {source} | "
+    f"Remediation: {source}"
+)
+
 topology_panel = create_topology_panel(topology_data)
 
 drift_panel = create_drift_panel(drift_data)
@@ -161,6 +172,7 @@ remediation_panel = create_remediation_panel(remediation_data)
 summary_panel = Panel(
     f"Cloud State: {data_source}\n"
     f"API Status: {connection_status}\n"
+    f"Endpoints: {endpoint_status}\n"
     f"Environment: {environment_data['name']}\n"
     f"Region: {environment_data['region']}\n"
     f"Last Updated: {environment_data['last_updated']}\n"
