@@ -8,9 +8,11 @@ import requests
 console = Console()
 api_error = None
 
-TOPOLOGY_API_URL = "http://127.0.0.1:8000/topology"
-DRIFT_API_URL = "http://127.0.0.1:8000/drift"
-REMEDIATION_API_URL = "http://127.0.0.1:8000/remediation"
+API_BASE_URL = "http://127.0.0.1:8000"
+
+TOPOLOGY_API_URL = f"{API_BASE_URL}/topology"
+DRIFT_API_URL = f"{API_BASE_URL}/drift"
+REMEDIATION_API_URL = f"{API_BASE_URL}/remediation"
 
 environment_data = {
     "name": "Development",
