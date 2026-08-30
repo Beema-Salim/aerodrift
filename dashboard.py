@@ -85,15 +85,15 @@ def create_remediation_panel(data):
 def get_topology_from_api():
     api_data = fetch_api_data(TOPOLOGY_API_URL)
 
-    if api_data:
+    if validate_api_data(api_data, ["nodes", "edges"]):
         return api_data
-    
+
     return dashboard_data["topology"]
 
 def get_drift_from_api():
     api_data = fetch_api_data(DRIFT_API_URL)
 
-    if api_data:
+    if validate_api_data(api_data, ["drift_count", "issues"]):
         return api_data
 
     return dashboard_data["drift"]
@@ -101,7 +101,7 @@ def get_drift_from_api():
 def get_remediation_from_api():
     api_data = fetch_api_data(REMEDIATION_API_URL)
 
-    if api_data:
+    if validate_api_data(api_data, ["status", "actions"]):
         return api_data
 
     return dashboard_data["remediation"]
@@ -130,7 +130,12 @@ def fetch_api_data(url):
         api_error = "API unavailable"
         return None
 
-    
+def validate_api_data(data, required_fields):
+    if not isinstance(data, dict):
+        return False
+
+    return all(field in data for field in required_fields)
+
 def test_dashboard_api_data():
     topology = get_topology_from_api()
     drift = get_drift_from_api()
