@@ -8,6 +8,10 @@ import requests
 console = Console()
 api_error = None
 
+TOPOLOGY_API_URL = "http://127.0.0.1:8000/topology"
+DRIFT_API_URL = "http://127.0.0.1:8000/drift"
+REMEDIATION_API_URL = "http://127.0.0.1:8000/remediation"
+
 environment_data = {
     "name": "Development",
     "region": "ap-south-1",
@@ -77,15 +81,15 @@ def create_remediation_panel(data):
     )
 
 def get_topology_from_api():
-    api_data = fetch_api_data("http://127.0.0.1:8000/topology")
+    api_data = fetch_api_data(TOPOLOGY_API_URL)
 
     if api_data:
         return api_data
-
+    
     return dashboard_data["topology"]
 
 def get_drift_from_api():
-    api_data = fetch_api_data("http://127.0.0.1:8000/drift")
+    api_data = fetch_api_data(DRIFT_API_URL)
 
     if api_data:
         return api_data
@@ -93,7 +97,7 @@ def get_drift_from_api():
     return dashboard_data["drift"]
 
 def get_remediation_from_api():
-    api_data = fetch_api_data("http://127.0.0.1:8000/remediation")
+    api_data = fetch_api_data(REMEDIATION_API_URL)
 
     if api_data:
         return api_data
