@@ -1,3 +1,6 @@
+from topology.graph_builder import GraphBuilder
+from ingestion.topology_adapter import normalize_resources
+from ingestion.resource_collector import collect_all_resources
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -13,9 +16,23 @@ def home():
 
 @app.get("/topology")
 def get_topology():
+
+    # Collect real AWS resources
+    ingestion_data = collect_all_resources()
+
+    # Convert ingestion data to topology format
+    resources = normalize_resources(ingestion_data)
+
+    # Build topology graph
+    builder = GraphBuilder()
+    builder.build(resources)
+
+    # Convert graph to dictionary
+    topology = builder.to_dict()
+
     return {
-        "nodes": 4,
-        "edges": 3
+        "nodes": len(topology["nodes"]),
+        "edges": len(topology["edges"])
     }
 
 @app.get("/drift")
