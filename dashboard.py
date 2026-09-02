@@ -110,7 +110,7 @@ def fetch_api_data(url):
     global api_error
 
     try:
-        response = requests.get(url, timeout=5)
+        response = requests.get(url, timeout=20)
         response.raise_for_status()
 
         data = response.json()
@@ -126,7 +126,8 @@ def fetch_api_data(url):
         api_error = "API request timed out"
         return None
 
-    except (requests.RequestException, ValueError):
+    except (requests.RequestException, ValueError) as error:
+        print("API ERROR:", error)
         api_error = "API unavailable"
         return None
 
