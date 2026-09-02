@@ -1,6 +1,11 @@
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from ingestion.async_collector import collect_all_resources_async
+from ingestion.topology_adapter import normalize_resources
+from topology.graph_builder import GraphBuilder
+from ingestion.exposure_detector import find_public_ingress
+from ingestion.drift_event import create_drift_events
 
 app = FastAPI(title="AeroDrift API")
 templates = Jinja2Templates(directory="web/templates")
@@ -12,26 +17,55 @@ def home():
    return {"message": "Welcome to AeroDrift API"}
 
 @app.get("/topology")
-def get_topology():
-    return {
-        "nodes": [],
-        "edges": []
-    }
+async def get_topology():
+    data = await collect_all_resources_async()
 
+    resources = normalize_resources(data)
+
+    builder = GraphBuilder()
+    graph = builder.build(resources)
+
+    nodes = [
+        {
+            "id": node_id,
+            **attributes
+        }
+        for node_id, attributes in graph.nodes(data=True)
+    ]
+
+    edges = [
+        {
+            "source": source,
+            "target": target,
+            **attributes
+        }
+        for source, target, attributes in graph.edges(data=True)
+    ]
+
+    return {
+        "nodes": nodes,
+        "edges": edges
+    }
 @app.get("/drift")
-def get_drift():
-    return {
-        "drift_count": 0,
-        "issues": []
-    }
+async def get_drift():
+    data = await collect_all_resources_async()
 
+    exposures = find_public_ingress(data["security_groups"])
+    events = create_drift_events(exposures)
+
+    return {
+        "drift_count": len(events),
+        "issues": events
+    }
 @app.get("/remediation")
 def get_remediation():
+    actions = []
+
     return {
         "status": "pending",
-        "actions": []
+        "remediation_count": len(actions),
+        "actions": actions
     }
-
 @app.get("/dashboard")
 def dashboard(request: Request):
     return templates.TemplateResponse(
