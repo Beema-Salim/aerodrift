@@ -1,5 +1,6 @@
 from ingestion.exposure_detector import find_public_ingress
 from ingestion.drift_event import create_drift_events
+from remediation.remediation_engine import build_remediation
 from topology.graph_builder import GraphBuilder
 from ingestion.topology_adapter import normalize_resources
 from ingestion.resource_collector import collect_all_resources
@@ -59,9 +60,37 @@ def get_drift():
 
 @app.get("/remediation")
 def get_remediation():
+
+    # Collect current AWS resources
+    ingestion_data = collect_all_resources()
+
+    # Detect public ingress exposures
+    security_groups = ingestion_data.get("security_groups", [])
+    exposures = find_public_ingress(security_groups)
+
+    # Create drift events
+    drift_events = create_drift_events(exposures)
+
+    # Build remediation plans without executing them
+    actions = []
+
+    for event in drift_events:
+        try:
+            remediation_plan = build_remediation(event)
+
+            actions.append({
+                "resource_id": event["resource_id"],
+                "event_type": event["event_type"],
+                "status": "planned",
+                "action_type": type(remediation_plan)._name_
+            })
+
+        except ValueError:
+            continue
+
     return {
-        "status": "pending",
-        "actions": []
+        "status": "planned" if actions else "pending",
+        "actions": actions
     }
 
 @app.get("/dashboard")
