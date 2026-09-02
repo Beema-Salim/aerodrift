@@ -9,6 +9,14 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 app = FastAPI(title="AeroDrift API")
+cached_resources = None
+def get_aws_resources():
+    global cached_resources
+
+    if cached_resources is None:
+        cached_resources = collect_all_resources()
+
+    return cached_resources
 templates = Jinja2Templates(directory="web/templates")
 
 app.mount("/static", StaticFiles(directory="web/static"), name="static")
@@ -21,7 +29,7 @@ def home():
 def get_topology():
 
     # Collect real AWS resources
-    ingestion_data = collect_all_resources()
+    ingestion_data = get_aws_resources()
 
     # Convert ingestion data to topology format
     resources = normalize_resources(ingestion_data)
@@ -42,7 +50,7 @@ def get_topology():
 def get_drift():
 
     # Collect current AWS resources
-    ingestion_data = collect_all_resources()
+    ingestion_data = get_aws_resources()
 
     # Get security groups
     security_groups = ingestion_data.get("security_groups", [])
@@ -62,7 +70,7 @@ def get_drift():
 def get_remediation():
 
     # Collect current AWS resources
-    ingestion_data = collect_all_resources()
+    ingestion_data = get_aws_resources()
 
     # Detect public ingress exposures
     security_groups = ingestion_data.get("security_groups", [])
@@ -82,7 +90,7 @@ def get_remediation():
                 "resource_id": event["resource_id"],
                 "event_type": event["event_type"],
                 "status": "planned",
-                "action_type": type(remediation_plan)._name_
+                "action_type": type(remediation_plan).__name__
             })
 
         except ValueError:
