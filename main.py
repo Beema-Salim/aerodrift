@@ -1,3 +1,5 @@
+from ingestion.exposure_detector import find_public_ingress
+from ingestion.drift_event import create_drift_events
 from topology.graph_builder import GraphBuilder
 from ingestion.topology_adapter import normalize_resources
 from ingestion.resource_collector import collect_all_resources
@@ -37,9 +39,22 @@ def get_topology():
 
 @app.get("/drift")
 def get_drift():
+
+    # Collect current AWS resources
+    ingestion_data = collect_all_resources()
+
+    # Get security groups
+    security_groups = ingestion_data.get("security_groups", [])
+
+    # Detect public ingress exposures
+    exposures = find_public_ingress(security_groups)
+
+    # Convert exposures into AeroDrift events
+    drift_events = create_drift_events(exposures)
+
     return {
-        "drift_count": 0,
-        "issues": []
+        "drift_count": len(drift_events),
+        "issues": drift_events
     }
 
 @app.get("/remediation")
