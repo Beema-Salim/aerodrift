@@ -4,3 +4,4 @@ __pycache__/
 venv/
 .env
 storage/*.db
+reports/*.pdf
