@@ -146,22 +146,26 @@ def validate_api_data(data, required_fields):
     if not all(field in data for field in required_fields):
         return False
 
-    if "nodes" in data and not isinstance(data["nodes"], int):
-        return False
+    try:
+        if "nodes" in data and not isinstance(data["nodes"], int):
+            return False
 
-    if "edges" in data and not isinstance(data["edges"], int):
-        return False
+        if "edges" in data and not isinstance(data["edges"], int):
+            return False
 
-    if "drift_count" in data and not isinstance(data["drift_count"], int):
-        return False
+        if "drift_count" in data and not isinstance(data["drift_count"], int):
+            return False
 
-    if "issues" in data and not isinstance(data["issues"], list):
-        return False
+        if "issues" in data and not isinstance(data["issues"], list):
+            return False
 
-    if "status" in data and not isinstance(data["status"], str):
-        return False
+        if "status" in data and not isinstance(data["status"], str):
+            return False
 
-    if "actions" in data and not isinstance(data["actions"], (int, list)):
+        if "actions" in data and not isinstance(data["actions"], (int, list)):
+            return False
+
+    except (TypeError, AttributeError):
         return False
 
     return True
