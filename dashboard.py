@@ -17,7 +17,7 @@ REMEDIATION_API_URL = f"{API_BASE_URL}/remediation"
 environment_data = {
     "name": "Development",
     "region": "ap-south-1",
-    "last_updated": "Week 1 Mock Run"
+    "last_updated": "Week 4 Finalization"
 }
 
 title = Text("AeroDrift CLI Dashboard", style="bold cyan")
