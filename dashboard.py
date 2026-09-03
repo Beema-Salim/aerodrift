@@ -192,6 +192,21 @@ def test_dashboard_api_data():
 
     print("Dashboard API integration test passed.")
 
+def test_dashboard_sections():
+    topology = get_topology_from_api()
+    drift = get_drift_from_api()
+    remediation = get_remediation_from_api()
+
+    assert isinstance(topology, dict)
+    assert isinstance(drift, dict)
+    assert isinstance(remediation, dict)
+
+    assert validate_api_data(topology, ["nodes", "edges"])
+    assert validate_api_data(drift, ["drift_count", "issues"])
+    assert validate_api_data(remediation, ["status", "actions"])
+
+    print("Dashboard sections integration test passed.")
+
 topology_data = get_topology_from_api()
 drift_data = get_drift_from_api()
 remediation_data = get_remediation_from_api()
@@ -251,3 +266,4 @@ console.print(
 console.print(summary_panel)
 
 test_dashboard_api_data()
+test_dashboard_sections()
