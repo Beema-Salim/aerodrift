@@ -106,6 +106,14 @@ def get_remediation_from_api():
 
     return dashboard_data["remediation"]
 
+def get_api_health():
+    health_data = fetch_api_data("http://127.0.0.1:8000/health")
+
+    if health_data and health_data.get("status") == "healthy":
+        return "Healthy"
+
+    return "Unavailable"
+
 def fetch_api_data(url):
     global api_error
 
@@ -162,6 +170,7 @@ def test_dashboard_api_data():
 topology_data = get_topology_from_api()
 drift_data = get_drift_from_api()
 remediation_data = get_remediation_from_api()
+api_health = get_api_health()
 
 refresh_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -192,13 +201,16 @@ remediation_panel = create_remediation_panel(remediation_data)
 
 summary_panel = Panel(
     f"Cloud State: {data_source}\n"
+    f"API Health: {api_health}\n"
     f"API Status: {connection_status}\n"
     f"Endpoints: {endpoint_status}\n"
     f"Environment: {environment_data['name']}\n"
     f"Region: {environment_data['region']}\n"
+    f"Data Source: AWS\n"
+    f"Cache: Active\n"
     f"Last Updated: {environment_data['last_updated']}\n"
     f"Data Refreshed: {refresh_time}\n"
-    f"Resources: {topology_data['nodes']}\n"
+    f"Total Resources: {topology_data['nodes']}\n"
     f"Status: Ready",
     title="System Status",
     border_style="magenta"
