@@ -379,3 +379,40 @@ The architecture can be extended in the future for:
 ## Project Goal
 
 The goal of AeroDrift is to reduce manual CloudOps remediation by combining real-time cloud state collection, graph-based security analysis, controlled automated remediation, and auditable incident reporting.
+
+## Final AeroDrift Features
+
+AeroDrift currently provides the following features:
+
+- Asynchronous AWS resource collection using `boto3` and `asyncio`
+- Collection of VPCs, Subnets, EC2 Instances, Security Groups, Route Tables, Internet Gateways, Network ACLs, and RDS Databases
+- AWS resource normalization for topology processing
+- Directed cloud topology graph using NetworkX
+- VPC → Subnet relationships
+- Subnet → EC2 relationships
+- EC2 → Security Group relationships
+- Security Group → Database relationships
+- Detection of public IPv4 ingress (`0.0.0.0/0`)
+- Detection of Internet → exposed Security Group → private Database paths
+- Rich terminal topology visualization
+- Red highlighting of detected drift
+- Standard CRITICAL drift event generation
+- Continuous AWS drift monitoring
+- AST-based generation of `revoke_security_group_ingress()` remediation
+- Validation of remediation actions before execution
+- Controlled execution of generated remediation code
+- Optional automatic remediation using the `--remediate` flag
+- SQLite historical topology snapshots
+- Historical graph change detection
+- Rich historical topology diff visualization
+- Persistent remediation success/failure history
+- Rich remediation history table
+- Automatic PDF incident report generation
+- Audit-only mode that performs no AWS modifications
+
+## Running the Final CLI
+
+Run AeroDrift in safe audit-only mode:
+
+```powershell
+python aerodrift_cli.py

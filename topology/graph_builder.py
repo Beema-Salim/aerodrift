@@ -64,6 +64,16 @@ class GraphBuilder:
                 for sg_id in resource.get("security_group_ids", []):
                     if sg_id in resource_ids:
                         self.add_edge(Edge(resource_id, sg_id, "uses"))
+            elif resource_type == "Database":
+                for sg_id in resource.get("security_group_ids", []):
+                    if sg_id in resource_ids:
+                        self.add_edge(
+                            Edge(
+                                sg_id,
+                                resource_id,
+                                "protects",
+                            )
+                        )
 
         return self.graph
 

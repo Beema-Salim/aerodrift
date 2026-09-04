@@ -37,6 +37,12 @@ def normalize_resources(data):
                     normalized["security_group_ids"] = resource.get(
                         "security_group_ids"
                     )
+                elif resource_type == "DATABASE":
+                    normalized["type"] = "Database"
+                    normalized["security_group_ids"] = resource.get(
+                       "security_group_ids", []
+                )
+                normalized["vpc_id"] = resource.get("vpc_id")
 
             elif resource_type == "SECURITY_GROUP":
                 normalized["type"] = "SecurityGroup"
