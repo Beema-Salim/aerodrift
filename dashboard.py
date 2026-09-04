@@ -32,13 +32,13 @@ dashboard_data = {
         "edges": 3
     },
     "drift": {
-        "drift_count": 0,
-        "issues": 0
-    },
-    "remediation": {
-        "status": "pending",
-        "actions": 0
-    }
+    "drift_count": 0,
+    "issues": []
+},
+"remediation": {
+    "status": "pending",
+    "actions": []
+}
 }
 
 def get_dashboard_data(api_data=None):
@@ -265,5 +265,6 @@ console.print(
 )
 console.print(summary_panel)
 
-test_dashboard_api_data()
-test_dashboard_sections()
+if __name__ == "__main__":
+    test_dashboard_api_data()
+    test_dashboard_sections()
