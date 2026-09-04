@@ -1,7 +1,6 @@
 import logging
 
-from .aws_client import get_ec2_client
-
+from .aws_client import get_ec2_client, get_rds_client
 logger = logging.getLogger(__name__)
 
 def _get_aws_response(ec2, method_name):
@@ -36,8 +35,14 @@ def collect_ec2_instances():
                 "resource_id": instance.get("InstanceId"),
                 "region": ec2.meta.region_name,
                 "state": instance.get("State", {}).get("Name"),
+                "subnet_id": instance.get("SubnetId"),
+                "vpc_id": instance.get("VpcId"),
+                "security_group_ids": [
+                    group.get("GroupId")
+                    for group in instance.get("SecurityGroups", [])
+                    if group.get("GroupId")
+                ],
             }
-
             instances.append(instance_data)
 
     return instances
@@ -199,6 +204,50 @@ def collect_network_acls():
         network_acls.append(network_acl_data)
 
     return network_acls
+def collect_rds_instances():
+    """
+    Collect AWS RDS database instances for topology analysis.
+    """
+
+    rds = get_rds_client()
+
+    try:
+        response = rds.describe_db_instances()
+    except Exception as error:
+        logger.error("AWS RDS API error: %s", error)
+        return []
+
+    databases = []
+
+    for db in response.get("DBInstances", []):
+        security_group_ids = [
+            group.get("VpcSecurityGroupId")
+            for group in db.get("VpcSecurityGroups", [])
+            if group.get("VpcSecurityGroupId")
+        ]
+
+        subnet_group = db.get("DBSubnetGroup") or {}
+
+        database_data = {
+            "resource_type": "DATABASE",
+            "resource_id": db.get("DBInstanceIdentifier"),
+            "region": rds.meta.region_name,
+            "engine": db.get("Engine"),
+            "status": db.get("DBInstanceStatus"),
+            "publicly_accessible": db.get(
+                "PubliclyAccessible", False
+            ),
+            "private": not db.get(
+                "PubliclyAccessible", False
+            ),
+            "vpc_id": subnet_group.get("VpcId"),
+            "security_group_ids": security_group_ids,
+        }
+
+        databases.append(database_data)
+
+    return databases
+
 
 def validate_resource_data(data):
     """
@@ -235,6 +284,7 @@ def collect_all_resources():
         "route_tables": collect_route_tables(),
         "internet_gateways": collect_internet_gateways(),
         "network_acls": collect_network_acls(),
+	"databases": collect_rds_instances(),
     }
 
     if not validate_resource_data(resources):

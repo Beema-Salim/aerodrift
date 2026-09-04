@@ -57,25 +57,57 @@
       loadTopology();
     </script>
 
-    <script>
-      async function loadDrift() {
-        try {
-          const response = await fetch("/drift");
-          const data = await response.json();
+   <script>
+  async function loadDrift() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const demoMode = params.get("demo") === "true";
 
-          document.getElementById("drift").innerHTML = `
-                <p><strong>Drift Count:</strong> ${data.drift_count}</p>
-                <p><strong>Issues:</strong> ${data.issues.length}</p>
-            `;
-        } catch (error) {
-          document.getElementById("drift").innerHTML =
-            "Unable to load drift data.";
-        }
+      const endpoint = demoMode ? "/drift-demo" : "/drift";
+
+      const response = await fetch(endpoint);
+      const data = await response.json();
+
+      let driftHtml = `
+        <p><strong>Drift Count:</strong> ${data.drift_count}</p>
+        <p><strong>Issues:</strong> ${data.issues.length}</p>
+      `;
+
+      if (demoMode) {
+        driftHtml =
+          `<p style="color:#d32f2f; font-weight:bold;">
+            SIMULATED DEMO - CRITICAL DRIFT DETECTED
+          </p>` + driftHtml;
       }
 
-      loadDrift();
-    </script>
+      if (data.issues.length > 0) {
+        const issue = data.issues[0];
 
+        driftHtml += `
+          <hr>
+          <p style="color:#d32f2f;">
+            <strong>Severity:</strong> ${issue.severity}
+          </p>
+          <p><strong>Event:</strong> ${issue.event_type}</p>
+          <p><strong>Resource:</strong> ${issue.resource_id}</p>
+          <p><strong>Public CIDR:</strong> ${issue.cidr}</p>
+          <p>
+            <strong>Port:</strong>
+            ${issue.from_port} - ${issue.to_port}
+          </p>
+        `;
+      }
+
+      document.getElementById("drift").innerHTML = driftHtml;
+
+    } catch (error) {
+      document.getElementById("drift").innerHTML =
+        "Unable to load drift data.";
+    }
+  }
+
+  loadDrift();
+</script>
     <script>
       async function loadRemediation() {
         try {

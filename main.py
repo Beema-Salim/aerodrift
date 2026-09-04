@@ -1,85 +1,79 @@
+from fastapi import FastAPI, Request
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+
+from ingestion.async_collector import collect_all_resources_async
 from ingestion.exposure_detector import find_public_ingress
 from ingestion.drift_event import create_drift_events
 from remediation.remediation_engine import build_remediation
 from topology.graph_builder import GraphBuilder
 from ingestion.topology_adapter import normalize_resources
-from ingestion.resource_collector import collect_all_resources
-from fastapi import FastAPI, Request
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
+
 
 app = FastAPI(title="AeroDrift API")
-cached_resources = None
-def get_aws_resources():
-    global cached_resources
 
-    if cached_resources is None:
-        cached_resources = collect_all_resources()
-
-    return cached_resources
 templates = Jinja2Templates(directory="web/templates")
 
 app.mount("/static", StaticFiles(directory="web/static"), name="static")
 
+
 @app.get("/")
 def home():
-   return {"message": "Welcome to AeroDrift API"}
+    return {"message": "Welcome to AeroDrift API"}
+
 
 @app.get("/topology")
-def get_topology():
+async def get_topology():
+    data = await collect_all_resources_async()
 
-    # Collect real AWS resources
-    ingestion_data = get_aws_resources()
+    resources = normalize_resources(data)
 
-    # Convert ingestion data to topology format
-    resources = normalize_resources(ingestion_data)
-
-    # Build topology graph
     builder = GraphBuilder()
-    builder.build(resources)
+    graph = builder.build(resources)
 
-    # Convert graph to dictionary
-    topology = builder.to_dict()
+    nodes = [
+        {
+            "id": node_id,
+            **attributes
+        }
+        for node_id, attributes in graph.nodes(data=True)
+    ]
+
+    edges = [
+        {
+            "source": source,
+            "target": target,
+            **attributes
+        }
+        for source, target, attributes in graph.edges(data=True)
+    ]
 
     return {
-        "nodes": len(topology["nodes"]),
-        "edges": len(topology["edges"])
+        "nodes": nodes,
+        "edges": edges
     }
+
 
 @app.get("/drift")
-def get_drift():
+async def get_drift():
+    data = await collect_all_resources_async()
 
-    # Collect current AWS resources
-    ingestion_data = get_aws_resources()
-
-    # Get security groups
-    security_groups = ingestion_data.get("security_groups", [])
-
-    # Detect public ingress exposures
-    exposures = find_public_ingress(security_groups)
-
-    # Convert exposures into AeroDrift events
-    drift_events = create_drift_events(exposures)
+    exposures = find_public_ingress(data["security_groups"])
+    events = create_drift_events(exposures)
 
     return {
-        "drift_count": len(drift_events),
-        "issues": drift_events
+        "drift_count": len(events),
+        "issues": events
     }
 
+
 @app.get("/remediation")
-def get_remediation():
+async def get_remediation():
+    data = await collect_all_resources_async()
 
-    # Collect current AWS resources
-    ingestion_data = get_aws_resources()
-
-    # Detect public ingress exposures
-    security_groups = ingestion_data.get("security_groups", [])
-    exposures = find_public_ingress(security_groups)
-
-    # Create drift events
+    exposures = find_public_ingress(data["security_groups"])
     drift_events = create_drift_events(exposures)
 
-    # Build remediation plans without executing them
     actions = []
 
     for event in drift_events:
@@ -90,7 +84,7 @@ def get_remediation():
                 "resource_id": event["resource_id"],
                 "event_type": event["event_type"],
                 "status": "planned",
-                "action_type": type(remediation_plan).__name__
+                "action_type": type(remediation_plan)._name_
             })
 
         except ValueError:
@@ -98,8 +92,34 @@ def get_remediation():
 
     return {
         "status": "planned" if actions else "pending",
+        "remediation_count": len(actions),
         "actions": actions
     }
+
+
+@app.get("/drift-demo")
+def get_drift_demo():
+    """
+    Simulated critical drift for dashboard demonstration.
+    This endpoint does not modify any AWS resource.
+    """
+    demo_event = {
+        "event_type": "PUBLIC_INGRESS",
+        "resource_type": "SECURITY_GROUP",
+        "resource_id": "sg-demo-public",
+        "severity": "CRITICAL",
+        "cidr": "0.0.0.0/0",
+        "protocol": "tcp",
+        "from_port": 22,
+        "to_port": 22,
+    }
+
+    return {
+        "demo": True,
+        "drift_count": 1,
+        "issues": [demo_event],
+    }
+
 
 @app.get("/dashboard")
 def dashboard(request: Request):
@@ -108,6 +128,7 @@ def dashboard(request: Request):
         name="dashboard.html",
         context={"request": request}
     )
+
 
 @app.get("/health")
 def health_check():

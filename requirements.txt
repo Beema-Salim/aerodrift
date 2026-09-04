@@ -1,3 +1,7 @@
 boto3
 networkx
 rich
+reportlab
+fastapi
+uvicorn
+jinja2

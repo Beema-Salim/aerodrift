@@ -8,6 +8,7 @@ from .resource_collector import (
     collect_route_tables,
     collect_internet_gateways,
     collect_network_acls,
+    collect_rds_instances,
 )
 
 
@@ -24,6 +25,7 @@ async def collect_all_resources_async():
         route_tables,
         internet_gateways,
         network_acls,
+        databases,
     ) = await asyncio.gather(
         asyncio.to_thread(collect_ec2_instances),
         asyncio.to_thread(collect_vpcs),
@@ -32,6 +34,7 @@ async def collect_all_resources_async():
         asyncio.to_thread(collect_route_tables),
         asyncio.to_thread(collect_internet_gateways),
         asyncio.to_thread(collect_network_acls),
+        asyncio.to_thread(collect_rds_instances),
     )
 
     return {
@@ -42,4 +45,5 @@ async def collect_all_resources_async():
         "route_tables": route_tables,
         "internet_gateways": internet_gateways,
         "network_acls": network_acls,
+	"databases": databases,
     }
