@@ -66,6 +66,28 @@ def get_remediation():
         "remediation_count": len(actions),
         "actions": actions
     }
+@app.get("/drift-demo")
+def get_drift_demo():
+    """
+    Simulated critical drift for dashboard demonstration.
+    This endpoint does not modify any AWS resource.
+    """
+    demo_event = {
+        "event_type": "PUBLIC_INGRESS",
+        "resource_type": "SECURITY_GROUP",
+        "resource_id": "sg-demo-public",
+        "severity": "CRITICAL",
+        "cidr": "0.0.0.0/0",
+        "protocol": "tcp",
+        "from_port": 22,
+        "to_port": 22,
+    }
+
+    return {
+        "demo": True,
+        "drift_count": 1,
+        "issues": [demo_event],
+    }
 @app.get("/dashboard")
 def dashboard(request: Request):
     return templates.TemplateResponse(
