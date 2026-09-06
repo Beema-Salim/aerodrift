@@ -1,18 +1,18 @@
-# AeroDrift
+AeroDrift
 
-**Agentic Cloud Topology & Remediation Platform**
+Agentic Cloud Topology & Remediation Platform
 
-AeroDrift is a CloudOps and Infrastructure Automation project that continuously collects AWS infrastructure state, builds an in-memory cloud topology graph, detects security drift, and performs controlled automated remediation.
+AeroDrift is a CloudOps and Infrastructure Automation platform that continuously collects AWS infrastructure state, builds an in-memory cloud topology graph, detects security drift, and performs controlled automated remediation.
 
-The project combines AWS resource ingestion, graph-based topology analysis, drift detection, AST-based remediation, historical topology tracking, Rich CLI visualization, and PDF incident reporting.
+The platform combines AWS resource ingestion, graph-based topology analysis, drift detection, AST-based remediation, historical topology tracking, Rich CLI visualization, FastAPI APIs, web dashboard integration, automated API testing, and PDF incident reporting.
 
 ---
 
-## Key Features
+Key Features
 
-- Asynchronous AWS resource collection using `boto3` and `asyncio`
+- Asynchronous AWS resource collection using Boto3 and Asyncio
 - AWS infrastructure topology using NetworkX
-- Public ingress exposure detection (`0.0.0.0/0`)
+- Public ingress exposure detection ("0.0.0.0/0")
 - Continuous AWS drift monitoring
 - Internet-to-private-database path detection
 - Critical security drift identification
@@ -23,61 +23,104 @@ The project combines AWS resource ingestion, graph-based topology analysis, drif
 - Historical graph comparison and diff
 - Rich terminal topology visualization
 - Rich audit CLI
+- FastAPI backend APIs
+- Web-based AeroDrift dashboard
+- Live AWS topology API integration
+- API response validation and automated testing
+- API connection error handling
+- Dashboard fallback behavior
 - Automatic PDF incident reports
 
 ---
 
-## Architecture
+Architecture
 
-```text
 AWS Cloud
-   |
-   v
+|
+v
 Async Resource Ingestion
-   |
-   v
+|
+v
 Resource Normalization
-   |
-   v
+|
+v
 NetworkX Topology Graph
-   |
-   +----------------------+
-   |                      |
-   v                      v
-Drift Detection      Path Detection
-   |                      |
-   +----------+-----------+
-              |
-              v
-       Security Event
-              |
-              v
-       AST Remediation
-              |
-              v
-      Controlled Executor
-              |
-              v
-        AWS Self-Healing
-              |
-              v
-     PDF Incident Report
+|
++----------------------+
+| |
+v v
+Drift Detection Path Detection
+| |
++----------+-----------+
+|
+v
+Security Event
+|
+v
+AST Remediation
+|
+v
+Controlled Executor
+|
+v
+AWS Self-Healing
+|
+v
+PDF Incident Report
 
 Topology Graph
-      |
-      v
+|
+v
 SQLite Snapshots
-      |
-      v
+|
+v
 Historical Graph Diff
-      |
-      v
+|
+v
 Rich Audit CLI
-```
+
+AWS / Topology / Drift Data
+|
+v
+FastAPI Backend
+|
++------------------+
+| |
+v v
+API Endpoints Validation
+|
+v
+Web Dashboard
 
 ---
 
-## AWS Resources Collected
+Topology Graph
+
+AeroDrift builds a directed cloud topology graph using NetworkX.
+
+The graph represents relationships between AWS infrastructure resources.
+
+Example:
+
+VPC
+|
+v
+Subnet
+|
+v
+EC2 Instance
+|
+v
+Security Group
+|
+v
+Database
+
+The topology graph can also be used to identify potentially dangerous network paths.
+
+---
+
+AWS Resources Collected
 
 AeroDrift currently collects:
 
@@ -88,23 +131,179 @@ AeroDrift currently collects:
 - Route Tables
 - Internet Gateways
 - Network ACLs
+- RDS Databases
 
 ---
 
-## Project Structure
+Web/API & Dashboard
 
-```text
+The Web/API layer provides a FastAPI backend and browser-based dashboard for accessing and visualizing AeroDrift infrastructure and security information.
+
+This layer connects the existing AWS ingestion and topology/drift processing components to a user-facing web interface.
+
+Web/API & Dashboard Contributions
+
+The Web/API and Dashboard implementation includes:
+
+- FastAPI backend setup
+- REST API endpoint implementation
+- Health monitoring endpoint
+- AWS topology API
+- Drift information API
+- Jinja2-based web dashboard
+- HTML/CSS dashboard interface
+- Backend-to-dashboard API integration
+- Live topology data retrieval
+- API connection timeout handling
+- API error handling
+- Fallback behavior when the backend is unavailable
+- API response validation
+- Automated endpoint testing using Pytest
+- Dashboard API integration testing
+
+Technologies Used in the Web/API Layer
+
+- FastAPI
+- Jinja2
+- Requests
+- Pytest
+- HTML
+- CSS
+- Python
+
+---
+
+FastAPI Backend
+
+The FastAPI backend exposes APIs for monitoring and analyzing AeroDrift data.
+
+"GET /health"
+
+Checks whether the AeroDrift API is running correctly.
+
+Example:
+
+GET /health
+
+The endpoint returns the current API health status.
+
+"GET /topology"
+
+Retrieves the current AWS topology information.
+
+Example:
+
+GET /topology
+
+The endpoint provides topology data that can be consumed by the dashboard and other AeroDrift components.
+
+"GET /drift"
+
+Returns the currently detected drift information.
+
+Example:
+
+GET /drift
+
+The endpoint provides the drift status generated by the AeroDrift detection system.
+
+---
+
+Web Dashboard
+
+AeroDrift includes a browser-based dashboard for displaying infrastructure and security information.
+
+The dashboard provides:
+
+- Cloud topology information
+- Drift status
+- Remediation status
+- API-backed dashboard data
+- Integration with AWS topology results
+- Browser-based visualization
+- API connection error handling
+- Fallback behavior when API data is unavailable
+
+The dashboard is implemented using FastAPI, Jinja2 templates, HTML, and CSS.
+
+---
+
+Dashboard Integration
+
+The dashboard connects to the FastAPI backend and retrieves API data dynamically.
+
+The integration flow is:
+
+AWS Infrastructure
+|
+v
+Resource Collection
+|
+v
+Topology / Drift Processing
+|
+v
+FastAPI Backend
+|
++----------------+
+| |
+v v
+Topology Drift
+API API
+| |
++-------+--------+
+|
+v
+Web Dashboard
+
+The dashboard API integration includes:
+
+- HTTP request handling
+- Connection timeout handling
+- API connection error handling
+- Response validation
+- Fallback behavior when the API is unavailable
+- Dynamic display of backend data
+
+This allows the dashboard to remain usable even when the API service cannot be reached.
+
+---
+
+API Validation & Testing
+
+AeroDrift includes automated tests for validating API endpoints and their responses.
+
+Testing covers:
+
+- API health endpoint
+- Topology endpoint
+- Drift endpoint
+- API response structure
+- Endpoint behavior
+- Connection and error handling
+- Dashboard API integration
+
+Automated testing is performed using "pytest".
+
+At the time of this documentation update, the API test suite has been verified with:
+
+6/6 tests passing
+
+---
+
+Project Structure
+
 aerodrift/
 |
 |-- ingestion/
-|   |-- aws_client.py
-|   |-- resource_collector.py
-|   |-- async_collector.py
-|   |-- topology_adapter.py
-|   |-- exposure_detector.py
-|   |-- drift_event.py
-|   |-- state_snapshot.py
-|   `-- drift_monitor.py
+| |-- aws_client.py
+| |-- resource_collector.py
+| |-- async_collector.py
+| |-- topology_adapter.py
+| |-- exposure_detector.py
+| |-- drift_event.py
+| |-- state_snapshot.py
+| `-- drift_monitor.py
 |
 |-- topology/
 |   |-- node.py
@@ -115,10 +314,10 @@ aerodrift/
 |   `-- demo_private_db_path.py
 |
 |-- remediation/
-|   |-- ast_generator.py
-|   |-- action_validator.py
-|   |-- remediation_engine.py
-|   `-- executor.py
+| |-- ast_generator.py
+| |-- action_validator.py
+| |-- remediation_engine.py
+| `-- executor.py
 |
 |-- storage/
 |   |-- history_db.py
@@ -126,19 +325,54 @@ aerodrift/
 |   `-- rich_diff.py
 |
 |-- reports/
-|   `-- incident_report.py
+| `-- incident_report.py
 |
+|-- web/
+|   |-- templates/
+|   |   `-- dashboard.html
+| `-- static/
+|       `-- style.css
+|
+|-- main.py
+|-- dashboard.py
 |-- aerodrift_cli.py
 |-- self_healing.py
 |-- requirements.txt
 `-- README.md
-```
+
+Web/API Files
+
+The primary files associated with the Web/API and Dashboard layer are:
+
+main.py
+|
++-- FastAPI application
++-- API routes
+`-- Backend integration
+
+dashboard.py
+|
++-- Dashboard data retrieval
++-- API integration
++-- Error handling
+`-- Fallback handling
+
+web/templates/dashboard.html
+|
+`-- Dashboard user interface
+
+web/static/style.css
+|
+`-- Dashboard styling
 
 ---
 
-## Technologies Used
+Technologies Used
 
 - Python
+- FastAPI
+- Jinja2
+- Requests
 - AWS Boto3
 - Asyncio
 - NetworkX
@@ -147,125 +381,189 @@ aerodrift/
 - SQLite
 - ReportLab
 - AWS CLI
+- Pytest
+- HTML
+- CSS
 - Git / GitHub
 
 ---
 
-## Installation
+Installation
 
-Clone the repository:
+1. Clone the repository
 
-```bash
 git clone https://github.com/nandysubham/aerodrift.git
 cd aerodrift
-```
 
-Install dependencies:
+2. Create a virtual environment
 
-```bash
+python -m venv .venv
+
+3. Activate the virtual environment
+
+Windows PowerShell:
+
+.venv\Scripts\Activate.ps1
+
+Windows Command Prompt:
+
+.venv\Scripts\activate
+
+4. Install dependencies
+
 pip install -r requirements.txt
-```
 
-Configure AWS CLI:
+---
 
-```bash
+Configure AWS CLI
+
+Configure AWS credentials:
+
 aws configure
-```
+
+Provide:
+
+AWS Access Key ID
+AWS Secret Access Key
+Default region name: ap-south-1
+Default output format: json
 
 Verify AWS authentication:
 
-```bash
 aws sts get-caller-identity
-```
 
-Use least-privilege AWS credentials. Read-only permissions are sufficient for topology collection and audit features. Remediation requires only the specific write permission needed for the controlled remediation action.
+Use least-privilege AWS credentials.
+
+Read-only permissions are sufficient for topology collection and audit features.
+
+Remediation requires only the specific write permission needed for the controlled remediation action.
 
 ---
 
-## Run AeroDrift Audit CLI
+Run AeroDrift Audit CLI
 
-```bash
+Run:
+
 python aerodrift_cli.py
-```
 
 The CLI:
 
-1. Collects current AWS resources
-2. Normalizes AWS data
-3. Builds the NetworkX topology
-4. Displays topology using Rich
-5. Saves a SQLite topology snapshot
-6. Compares the latest topology with the previous snapshot
-7. Displays an audit summary
+- Collects current AWS resources
+- Normalizes AWS data
+- Builds the NetworkX topology
+- Displays topology using Rich
+- Saves a SQLite topology snapshot
+- Compares the latest topology with the previous snapshot
+- Displays an audit summary
 
 ---
 
-## Run Security Path Demo
+Run FastAPI Backend
+
+Start the FastAPI development server:
+
+python -m uvicorn main:app --reload
+
+The API will be available locally at:
+
+http://127.0.0.1:8000
+
+Main endpoints:
+
+/health
+/topology
+/drift
+
+FastAPI also provides its standard interactive API documentation.
+
+---
+
+Run the Dashboard
+
+Open another terminal, activate the virtual environment, and run:
+
+python dashboard.py
+
+The dashboard retrieves information from the FastAPI backend and displays topology, drift, and remediation status.
+
+---
+
+Run the Tests
+
+Run the automated test suite:
+
+python -m pytest
+
+The API validation and endpoint tests should pass successfully.
+
+---
+
+Run Security Path Demo
 
 The repository contains a safe simulated topology for demonstrating Internet-to-private-database path detection.
 
-```bash
+Run:
+
 python -m topology.demo_private_db_path
-```
 
 Example path:
 
-```text
 0.0.0.0/0
-    |
-    v
+|
+v
 Security Group
-    |
-    v
+|
+v
 Private Database
-```
 
-AeroDrift detects this path as a **CRITICAL** security drift.
+AeroDrift detects this path as a "CRITICAL" security drift.
 
 This demo is simulated and does not modify AWS resources.
 
 ---
 
-## Drift Detection
+Drift Detection
 
 AeroDrift continuously compares AWS state snapshots.
 
 Example security drift:
 
-```text
 Security Group:
 0.0.0.0/0 -> TCP Port 22
-```
 
-The system creates a critical `PUBLIC_INGRESS` drift event when unauthorized public ingress is detected.
+The system creates a critical "PUBLIC_INGRESS" drift event when unauthorized public ingress is detected.
 
 ---
 
-## Automated Remediation
+Automated Remediation
 
-For supported Security Group drift events, AeroDrift:
+For supported Security Group drift events, AeroDrift follows this workflow:
 
-```text
 Detect Drift
-    |
+|
+v
 Validate Event
-    |
+|
+v
 Generate Python AST
-    |
+|
+v
 Compile AST
-    |
+|
+v
 Controlled exec()
-    |
+|
+v
 boto3 revoke_security_group_ingress()
-    |
+|
+v
 Generate Incident PDF
-```
 
-The remediation engine generates the exact AWS API operation programmatically using Python AST.
+The remediation engine generates the required AWS API operation programmatically using Python AST.
 
 ---
 
-## Historical Topology
+Historical Topology
 
 AeroDrift stores topology snapshots in SQLite.
 
@@ -282,7 +580,7 @@ Generated SQLite database files are excluded from Git.
 
 ---
 
-## PDF Incident Reports
+PDF Incident Reports
 
 After successful remediation, AeroDrift can automatically generate a PDF incident report containing:
 
@@ -301,7 +599,7 @@ Generated incident PDF files are excluded from Git.
 
 ---
 
-## Safety
+Safety
 
 AeroDrift follows these safety principles:
 
@@ -312,56 +610,117 @@ AeroDrift follows these safety principles:
 - Execute only generated and validated remediation AST.
 - Never test destructive operations on production resources.
 - Use dedicated test resources for remediation testing.
+- Keep audit-only operations separate from remediation operations.
 
 ---
 
-## Demo Flow
+Demo Flow
 
 For a project demonstration:
 
-### 1. Run AWS topology audit
+1. Run AWS topology audit
 
-```bash
 python aerodrift_cli.py
-```
 
-### 2. Run it again
+The CLI collects the current AWS resources and builds the topology.
 
-```bash
+2. Run the audit again
+
 python aerodrift_cli.py
-```
 
-The historical diff should show `NO CHANGE` when AWS topology remains unchanged.
+The historical diff should show:
 
-### 3. Run security path detection demo
+NO CHANGE
 
-```bash
+when the AWS topology remains unchanged.
+
+3. Start the API
+
+python -m uvicorn main:app --reload
+
+4. Test the API
+
+Check:
+
+/health
+/topology
+/drift
+
+5. Open the Web Dashboard
+
+Open the dashboard route:
+
+/dashboard
+
+The dashboard displays available topology, drift, and remediation information from the AeroDrift backend.
+
+6. Run Security Path Detection Demo
+
 python -m topology.demo_private_db_path
-```
 
-The CLI displays the simulated Internet-to-private-database path as `CRITICAL`.
+The CLI displays the simulated Internet-to-private-database path as:
 
-### 4. Explain self-healing flow
-
-```text
-AWS Drift
-   ->
-Public Ingress Detection
-   ->
-Drift Event
-   ->
-AST Remediation
-   ->
-Controlled Execution
-   ->
-Security Group Rule Revoked
-   ->
-PDF Incident Report
-```
+CRITICAL
 
 ---
 
-## Current Scope
+Self-Healing Flow
+
+The complete self-healing flow is:
+
+AWS Drift
+|
+v
+Public Ingress Detection
+|
+v
+Drift Event
+|
+v
+AST Remediation
+|
+v
+Controlled Execution
+|
+v
+Security Group Rule Revoked
+|
+v
+PDF Incident Report
+
+---
+
+API and Dashboard Flow
+
+The Web/API workflow is:
+
+AWS Resources
+|
+v
+Resource Ingestion
+|
+v
+Topology / Drift Data
+|
+v
+FastAPI
+|
++----------------+
+| |
+v v
+/topology /drift
+| |
++-------+--------+
+|
+v
+Web Dashboard
+|
+v
+User Visualization
+
+---
+
+Current Scope
 
 AeroDrift currently focuses on AWS infrastructure and Security Group public-ingress remediation.
 
@@ -373,35 +732,50 @@ The architecture can be extended in the future for:
 - More remediation actions
 - Advanced topology risk analysis
 - Persistent audit and compliance reporting
+- Additional dashboard visualizations
+- Additional API endpoints
 
 ---
 
-## Project Goal
+Project Goal
 
-The goal of AeroDrift is to reduce manual CloudOps remediation by combining real-time cloud state collection, graph-based security analysis, controlled automated remediation, and auditable incident reporting.
+The goal of AeroDrift is to reduce manual CloudOps remediation by combining:
 
-## Final AeroDrift Features
+- Real-time cloud state collection
+- Graph-based security analysis
+- Controlled automated remediation
+- Historical topology tracking
+- FastAPI-based API access
+- Web-based dashboard visualization
+- Automated API validation
+- Auditable incident reporting
+
+This provides a foundation for safer and more automated cloud infrastructure monitoring and remediation.
+
+---
+
+Final AeroDrift Features
 
 AeroDrift currently provides the following features:
 
-- Asynchronous AWS resource collection using `boto3` and `asyncio`
+- Asynchronous AWS resource collection using Boto3 and Asyncio
 - Collection of VPCs, Subnets, EC2 Instances, Security Groups, Route Tables, Internet Gateways, Network ACLs, and RDS Databases
 - AWS resource normalization for topology processing
 - Directed cloud topology graph using NetworkX
-- VPC → Subnet relationships
-- Subnet → EC2 relationships
-- EC2 → Security Group relationships
-- Security Group → Database relationships
-- Detection of public IPv4 ingress (`0.0.0.0/0`)
-- Detection of Internet → exposed Security Group → private Database paths
+- VPC -> Subnet relationships
+- Subnet -> EC2 relationships
+- EC2 -> Security Group relationships
+- Security Group -> Database relationships
+- Detection of public IPv4 ingress ("0.0.0.0/0")
+- Detection of Internet -> exposed Security Group -> private Database paths
 - Rich terminal topology visualization
 - Red highlighting of detected drift
-- Standard CRITICAL drift event generation
+- Standard "CRITICAL" drift event generation
 - Continuous AWS drift monitoring
-- AST-based generation of `revoke_security_group_ingress()` remediation
+- AST-based generation of "revoke_security_group_ingress()" remediation
 - Validation of remediation actions before execution
 - Controlled execution of generated remediation code
-- Optional automatic remediation using the `--remediate` flag
+- Optional automatic remediation using the "--remediate" flag
 - SQLite historical topology snapshots
 - Historical graph change detection
 - Rich historical topology diff visualization
@@ -409,10 +783,36 @@ AeroDrift currently provides the following features:
 - Rich remediation history table
 - Automatic PDF incident report generation
 - Audit-only mode that performs no AWS modifications
+- FastAPI backend
+- API health monitoring through "/health"
+- AWS topology API through "/topology"
+- Drift information API through "/drift"
+- Web-based AeroDrift dashboard
+- Live API integration between backend and dashboard
+- API connection error handling
+- Fallback behavior when API data is unavailable
+- Automated API endpoint testing using Pytest
+- API response validation
+- Dashboard API integration testing
 
-## Running the Final CLI
+---
+
+Running the Final CLI
 
 Run AeroDrift in safe audit-only mode:
 
-```powershell
 python aerodrift_cli.py
+
+For supported remediation workflows, use the remediation option only when working with approved test resources:
+
+python aerodrift_cli.py --remediate
+
+Always verify the target AWS environment and permissions before enabling remediation.
+
+---
+
+Project Status
+
+AeroDrift integrates AWS infrastructure ingestion, topology analysis, drift detection, controlled remediation, historical tracking, API services, web dashboard visualization, automated testing, and incident reporting into a unified CloudOps platform.
+
+The project is designed with safety, modularity, testing, and future extensibility in mind.
